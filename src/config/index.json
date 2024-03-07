@@ -1,0 +1,9 @@
+{
+  "globalConfig1": "value1",
+  "globalConfig2": "value2",
+  "mainHero": {
+    "title": "Wilson Ferreira Aldunate",
+    "description": "Archivo historico de Wilson Ferreira Aldunate",
+    "mainHeroImage": "../public/images/mainImg.png"
+  }
+}
