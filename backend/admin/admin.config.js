@@ -1,28 +1,31 @@
-// src/admin/admin.config.js
+import AdminJSExpress from '@adminjs/express'
 import AdminJSSequelize from '@adminjs/sequelize'
 import AdminJS from 'adminjs'
 
-import sequelize from '../database.js' // Asegúrate de que la ruta sea correcta
-import mediaFileResource from './resources/mediafile.resource.js' // Asegúrate de que la ruta sea correcta
-import mediaItemResource from './resources/mediaItem.resource.js' // Asegúrate de que la ruta sea correcta
+import mediaFileResource from './resources/mediafile.resource.js'
+import mediaItemResource from './resources/mediaitem.resource.js'
 
-// Configurando AdminJS para usar Sequelize
-AdminJS.registerAdapter(AdminJSSequelize)
+AdminJS.registerAdapter({
+  Resource: AdminJSSequelize.Resource,
+  Database: AdminJSSequelize.Database
+})
 
-const adminJsOptions = {
-  databases: [sequelize],
+const adminOptions = {
+  resources: [mediaItemResource, mediaFileResource],
   rootPath: '/admin',
-  resources: [
-    {
-      resource: mediaItemResource.resource,
-      options: mediaItemResource.options
-    },
-    {
-      resource: mediaFileResource.resource,
-      options: mediaFileResource.options
-    }
-  ]
-  // Omitir configuración relacionada si ya no usas AdminJS.bundle
+  branding: {
+    companyName: 'Admin Console',
+    logo: false,
+    softwareBrothers: false
+  }
 }
 
-export default adminJsOptions
+console.log('Loading mediaItemResource:', mediaItemResource)
+console.log('Loading mediaFileResource:', mediaFileResource)
+console.log('Before creating AdminJS instance')
+const admin = new AdminJS(adminOptions)
+console.log('After creating AdminJS instance')
+
+const adminConfig = AdminJSExpress.buildRouter(admin)
+
+export default adminConfig

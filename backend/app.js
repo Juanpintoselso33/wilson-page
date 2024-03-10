@@ -1,14 +1,15 @@
-// app.js
-
+import AdminJSSequelize from '@adminjs/sequelize'
+import AdminJS from 'adminjs'
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 import adminRouter from './admin.router.js' // Rutas de AdminJS
-import adminJsOptions from './admin/admin.config.js' // Configuración de AdminJS
+import adminConfig from './admin/admin.config.js' // Configuración de AdminJS
 import sequelize from './database.js'
 import routes from './routes/index.js' // Tus rutas personalizadas
 
+AdminJS.registerAdapter(AdminJSSequelize)
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -20,7 +21,8 @@ const __dirname = path.dirname(__filename)
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Montar las rutas de AdminJS con el rootPath correcto
-app.use(adminJsOptions.rootPath, adminRouter)
+app.use(adminConfig)
+app.use(adminRouter)
 
 sequelize
   .sync()

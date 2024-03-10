@@ -1,33 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
+import { fetchMediaItems } from '../api/mediaService' // Asegúrate de que esta función esté implementada correctamente
+import { MediaItem } from '../types/mediaItem.types' // Asegúrate de que la ruta de importación sea correcta
 import InfoCard from './InfoCard'
 
 const InfoCardsSection = () => {
-  const placeholderData = [
-    {
-      title: 'Card 1',
-      description: 'This is a placeholder description for card 1.'
-    },
-    {
-      title: 'Card 2',
-      description: 'This is a placeholder description for card 2.'
-    },
-    {
-      title: 'Card 3',
-      description: 'This is a placeholder description for card 3.'
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
+
+  useEffect(() => {
+    const loadMediaItems = async () => {
+      try {
+        const data = await fetchMediaItems()
+        setMediaItems(data)
+      } catch (error) {
+        console.error('Failed to fetch media items:', error)
+      }
     }
-    // Agrega más objetos con datos de placeholder según necesites
-  ]
+
+    loadMediaItems()
+  }, [])
 
   return (
     <section className="p-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {placeholderData.map((data, index) => (
+        {mediaItems.map((item) => (
           <InfoCard
-            key={index}
-            title={data.title}
-            description={data.description}
-            // Pasa más props si las agregaste en InfoCardProps
+            key={item.id}
+            title={item.name}
+            description={item.description}
+            mediaFileUrl={item.media_file?.file || 'defaultFileUrl'} // Ajusta según la estructura de tus datos
           />
         ))}
       </div>
