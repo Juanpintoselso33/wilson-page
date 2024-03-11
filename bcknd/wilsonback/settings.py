@@ -29,6 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -42,12 +43,20 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'rest_framework',
     'wilsonbackend',
+    'corsheaders',
+    
     
 ]
 INTERNAL_IPS = [
     '127.0.0.1',
     'localhost',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://yourproductionfrontend.com",
+]
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -85,7 +94,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',    
+    'debug_toolbar.middleware.DebugToolbarMiddleware',   
+    'corsheaders.middleware.CorsMiddleware',
+     
 ]
 
 ROOT_URLCONF = 'wilsonback.urls'

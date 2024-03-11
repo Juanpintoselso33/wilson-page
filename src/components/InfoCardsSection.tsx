@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { fetchMediaItems } from '../api/mediaService' // Asegúrate de que esta función esté implementada correctamente
-import { MediaItem } from '../types/mediaItem.types' // Asegúrate de que la ruta de importación sea correcta
+import { fetchMediaFileById } from '../api/mediaFile'
+import { fetchMediaItems } from '../api/mediaService'
+import { MediaItem } from '../types/mediaItem.types'
 import InfoCard from './InfoCard'
 
 const InfoCardsSection = () => {
@@ -10,8 +11,21 @@ const InfoCardsSection = () => {
   useEffect(() => {
     const loadMediaItems = async () => {
       try {
-        const data = await fetchMediaItems()
-        setMediaItems(data)
+        console.log('Fetching media items...')
+        const mediaItemsData = await fetchMediaItems()
+        console.log('Media items fetched:', mediaItemsData)
+        const mediaItemsWithFiles = await Promise.all(
+          mediaItemsData
+            .filter((item) => item.media_file !== undefined) // Use the correct property name here
+            .map(async (item) => {
+              console.log('Fetching media file for item:', item)
+              const mediaFile = await fetchMediaFileById(item.media_file) // And here
+              console.log('Fetched media file:', mediaFile)
+              return { ...item, mediaFile }
+            })
+        )
+        console.log('Media items with files:', mediaItemsWithFiles)
+        setMediaItems(mediaItemsWithFiles)
       } catch (error) {
         console.error('Failed to fetch media items:', error)
       }
@@ -28,7 +42,7 @@ const InfoCardsSection = () => {
             key={item.id}
             title={item.name}
             description={item.description}
-            mediaFileUrl={item.media_file?.file || 'defaultFileUrl'} // Ajusta según la estructura de tus datos
+            mediaFileUrl={item.mediaFile?.file || 'defaultFileUrl'}
           />
         ))}
       </div>

@@ -70,7 +70,9 @@ def create_media_view(request):
 
         # Obtener la URL de descarga
         try:
-            file_url = b2_api.get_download_url_for_fileid(uploaded_file.id_)
+            file_name = uploaded_file.file_name
+            bucket_name = os.getenv('B2_BUCKET_NAME')
+            file_url = f"https://f005.backblazeb2.com/file/{bucket_name}/{file_name}"
             logger.info(f"File uploaded to Backblaze B2: {file_url}")
         except Exception as e:
             logger.error(f"Error al obtener la URL de descarga: {str(e)}")
@@ -147,10 +149,10 @@ def get_media_by_id_view(request, media_id):
     print("Media ID:", media_id)  # Debugging
     print("Media ID type:", type(media_id))
     try:
-        response = supabase.table('wilsonbackend_mediafile').select('*').eq('id', media_id).execute()
+        response = supabase.table('wilsonbackend_mediafile').select('*').eq('id', str(media_id)).execute()
         print("Response type:", type(response))  # Debug response type
         print("Response data type:", type(response['data']))  # Debug 'data' type in response
-        if response['data']:
+        if response['data'] and isinstance(response['data'], list):
             # Directly return the data without using a serializer
             return Response(response['data'][0], status=status.HTTP_200_OK)
         else:

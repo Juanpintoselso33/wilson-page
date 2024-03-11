@@ -13,14 +13,14 @@ const InfoCard: React.FC<InfoCardProps> = ({
   mediaFileUrl
 }) => {
   return (
-    <div className="m-2 rounded bg-white p-4 shadow-md">
-      <h3 className="mb-2 text-lg font-bold">{title}</h3>
-      <p className="text-gray-600">{description}</p>
-      {/* Ejemplo de cómo mostrar la URL del archivo media */}
-      <div>
-        <a href={mediaFileUrl} target="_blank" rel="noopener noreferrer">
-          Ver archivo
-        </a>
+    <div className="m-4 flex flex-col items-center justify-center rounded-lg bg-white p-6 shadow-lg">
+      <h3 className="mb-4 text-xl font-semibold text-gray-800">{title}</h3>
+      <p className="mb-4 text-center text-gray-600">{description}</p>
+      <div className="flex justify-center">
+        <video className="rounded-lg shadow" width="480" controls>
+          <source src={mediaFileUrl} type="video/mp4" />
+          Tu navegador no soporta el elemento de video.
+        </video>
       </div>
     </div>
   )
