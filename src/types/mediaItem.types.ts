@@ -7,4 +7,5 @@ export interface MediaItem {
   created_at: Date
   updated_at: Date
   mediaFile?: MediaFile // This remains for the fetched media file object
+  category: string // Add this line
 }

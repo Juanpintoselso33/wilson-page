@@ -10,6 +10,7 @@ class MediaItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = MediaItem
         fields = '__all__'
+        depth = 1 
 
 class MediaFileSupabaseSerializer(serializers.Serializer):
     filename = serializers.CharField(max_length=200)

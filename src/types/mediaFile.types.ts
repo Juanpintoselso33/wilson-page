@@ -4,4 +4,5 @@ export interface MediaFile {
   file: string
   createdAt: Date
   updatedAt: Date
+  thumbnail: string
 }

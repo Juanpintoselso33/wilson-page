@@ -15,14 +15,22 @@ const InfoCardsSection = () => {
         const mediaItemsData = await fetchMediaItems()
         console.log('Media items fetched:', mediaItemsData)
         const mediaItemsWithFiles = await Promise.all(
-          mediaItemsData
-            .filter((item) => item.media_file !== undefined) // Use the correct property name here
-            .map(async (item) => {
+          mediaItemsData.map(async (item) => {
+            if (item.media_files.length > 0) {
               console.log('Fetching media file for item:', item)
-              const mediaFile = await fetchMediaFileById(item.media_file) // And here
+              const mediaFile = await fetchMediaFileById(item.media_files[0].id) // Adjusted to fetch the first media file
               console.log('Fetched media file:', mediaFile)
-              return { ...item, mediaFile }
-            })
+              console.log('Fetched media file with thumbnail:', mediaFile) // Added to debug thumbnailUrl undefined issue
+              // Assuming `mediaFile` is the object you received from the backend
+              mediaFile.file = decodeURIComponent(mediaFile.file).replace(
+                /^\//,
+                ''
+              )
+              // Directly use mediaFile.file without decoding or URL manipulation
+              return { ...item, mediaFile: mediaFile }
+            }
+            return item // Return item as is if no media files are associated
+          })
         )
         console.log('Media items with files:', mediaItemsWithFiles)
         setMediaItems(mediaItemsWithFiles)
@@ -42,7 +50,9 @@ const InfoCardsSection = () => {
             key={item.id}
             title={item.name}
             description={item.description}
-            mediaFileUrl={item.mediaFile?.file || 'defaultFileUrl'}
+            mediaFileUrls={[item.mediaFile?.file || 'defaultFileUrl']}
+            thumbnailUrl={item.mediaFile?.thumbnail || 'defaultThumbnailUrl'}
+            category={item.category} // Pass the category prop
           />
         ))}
       </div>

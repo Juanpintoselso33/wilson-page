@@ -24,6 +24,10 @@ load_dotenv()
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
+# Asegúrate de reemplazar estas rutas con las rutas correctas en tu sistema
+os.environ['FFMPEG_BINARY'] = r'C:\ffmpeg\bin\ffmpeg.exe'
+os.environ['FFPROBE_BINARY'] = r'C:\ffmpeg\bin\ffprobe.exe'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -44,7 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'wilsonbackend',
     'corsheaders',
-    
+    'taggit',
     
 ]
 INTERNAL_IPS = [
@@ -67,12 +71,12 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'debug.log',  # Asegúrate de que la ruta sea accesible y tenga permisos de escritura
+            'filename': BASE_DIR / 'debug.log',
         },        
     },
     'loggers': {        
         'wilsonbackend': {
-            'handlers': ['console', 'file'],  # Agrega 'file' para que los logs también se escriban en el archivo
+            'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': True,
         },
