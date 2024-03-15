@@ -50,7 +50,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
                 src={mediaFileUrls[currentImageIndex]}
               />
               <button
-                className="absolute inset-y-0 left-0 z-10 flex items-center justify-center p-2 text-cyan-800 transition-colors duration-200 hover:bg-cyan-100 hover:bg-opacity-50"
+                className="absolute inset-y-0 left-0 z-10 flex items-center justify-center p-2 text-cyan-800 transition-colors duration-200 hover:bg-cyan-100/50"
                 onClick={() =>
                   setCurrentImageIndex(
                     currentImageIndex > 0
@@ -62,7 +62,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
                 <FontAwesomeIcon icon={faArrowLeft} size="lg" />
               </button>
               <button
-                className="absolute inset-y-0 right-0 z-10 flex items-center justify-center p-2 text-cyan-800 transition-colors duration-200 hover:bg-cyan-100 hover:bg-opacity-50"
+                className="absolute inset-y-0 right-0 z-10 flex items-center justify-center p-2 text-cyan-800 transition-colors duration-200 hover:bg-cyan-100/50"
                 onClick={() =>
                   setCurrentImageIndex(
                     currentImageIndex < mediaFileUrls.length - 1

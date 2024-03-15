@@ -29,8 +29,8 @@ const NavBar: React.FC = () => {
               </a>
             </li>
             <li>
-              <a href="/contact" className="hover:text-cyan-600">
-                Contact
+              <a href="/admin" className="hover:text-cyan-600">
+                Admin
               </a>
             </li>
           </ul>
