@@ -8,7 +8,7 @@ export const fetchMediaItems = async () => {
     }
     return await response.json()
   } catch (error) {
-    console.error('Error fetching media items:', error)
+    // console.error('Error fetching media items:', error)
     throw error
   }
 }

@@ -4,32 +4,32 @@ import config from '../config/index.json'
 
 const NavBar: React.FC = () => {
   return (
-    <nav className="bg-white p-4 text-gray-700">
+    <nav className="bg-white p-4 text-cyan-800">
       <div className="container mx-auto flex items-center justify-between">
         <div className="text-lg font-semibold">
-          <a href="/" className="hover:text-gray-200">
+          <a href="/" className="hover:text-cyan-600">
             Logo
           </a>
         </div>
         <div className="flex items-center space-x-4">
           <ul className="flex space-x-4">
             <li>
-              <a href="/home" className="hover:text-gray-200">
+              <a href="/home" className="hover:text-cyan-600">
                 Home
               </a>
             </li>
             <li>
-              <a href="/about" className="hover:text-gray-200">
+              <a href="/about" className="hover:text-cyan-600">
                 About
               </a>
             </li>
             <li>
-              <a href="/services" className="hover:text-gray-200">
+              <a href="/services" className="hover:text-cyan-600">
                 Services
               </a>
             </li>
             <li>
-              <a href="/contact" className="hover:text-gray-200">
+              <a href="/contact" className="hover:text-cyan-600">
                 Contact
               </a>
             </li>

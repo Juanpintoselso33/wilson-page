@@ -1,31 +1,17 @@
-import React, { useState } from 'react'
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { useContext, useState } from 'react'
 
-import InfoCardDetailModal from './InfoCardDetailModal'
-
-// Componentes locales simplificados
-const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({
-  children,
-  className
-}) => (
-  <div className={`rounded-lg bg-white shadow ${className}`}>{children}</div>
-)
-
-const CardContent: React.FC<{
-  children: React.ReactNode
-  className?: string
-}> = ({ children, className }) => (
-  // Replace "card-content" with Tailwind utility classes
-  <div className={`rounded-lg bg-white p-4 shadow ${className}`}>
-    {children}
-  </div>
-)
+import { infoCard } from '../config/index.json'
+import { MediaContext } from '../contexts/MediaContext'
 
 interface InfoCardProps {
   title: string
   description: string
   mediaFileUrls: string[]
-  thumbnailUrl?: string // Optional thumbnail URL for videos
-  category: string // Add category to the props
+  thumbnailUrl?: string
+  category: string
+  mediaFiles: any[]
 }
 
 const InfoCard: React.FC<InfoCardProps> = ({
@@ -35,56 +21,90 @@ const InfoCard: React.FC<InfoCardProps> = ({
   thumbnailUrl,
   category
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  let displayUrl = mediaFileUrls[0] // Default display URL
-
-  console.log('category', category)
-  console.log('thumbnailUrl', thumbnailUrl)
-  console.log('mediaFileUrls', mediaFileUrls)
+  let displayUrl = mediaFileUrls[0]
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const { setSelectedMediaItem, setIsModalOpen: setModalOpen } =
+    useContext(MediaContext)
 
   if (category === 'video' && thumbnailUrl) {
-    displayUrl = thumbnailUrl // Use thumbnailUrl for videos
+    displayUrl = thumbnailUrl
   }
 
-  // Add more conditions for other categories if needed
-
   return (
-    <Card className="w-full max-w-lg border-2 border-cyan-300 bg-white text-cyan-700 shadow-md transition-transform hover:scale-105 dark:border-2 dark:border-gray-700 dark:bg-gray-900">
-      <CardContent className="w-full space-y-6">
-        <div className="flex w-full justify-center">
-          <img
-            alt="Media Thumbnail"
-            className="rounded-lg object-cover"
-            height={200}
-            src={displayUrl} // Use displayUrl here
-            style={{ aspectRatio: '400/200', objectFit: 'cover' }}
-            width={400}
-          />
+    <div className="mx-auto w-full max-w-lg overflow-hidden rounded-lg border-cyan-800 bg-white shadow-lg transition-transform hover:scale-105">
+      <div className="p-4">
+        <div className="mb-2 text-center text-sm font-medium uppercase text-cyan-800">
+          {category}
         </div>
-        <div className="grid w-full grid-cols-2 gap-4">
-          <div className="text-sm font-medium text-gray-500">Title</div>
-          <div className="text-sm font-medium">{title}</div>
-          <div className="text-sm font-medium text-gray-500">Description</div>
-          <div className="text-sm font-medium">{description}</div>
-          {/* Ajusta según los datos que tengas disponibles */}
+        <hr className="border-t border-gray-200" />
+        <h2 className="my-4 text-center text-2xl font-bold text-cyan-800">
+          {title}
+        </h2>
+        <div className="relative mx-auto mb-4 h-64 w-full">
+          {/* Image and navigation buttons */}
+          {mediaFileUrls.length > 1 && category === 'fotos' ? (
+            <>
+              <img
+                alt="Media Thumbnail"
+                className="h-full w-full rounded-lg object-cover transition-opacity duration-500 ease-in-out"
+                src={mediaFileUrls[currentImageIndex]}
+              />
+              <button
+                className="absolute inset-y-0 left-0 z-10 flex items-center justify-center p-2 text-cyan-800 transition-colors duration-200 hover:bg-cyan-100 hover:bg-opacity-50"
+                onClick={() =>
+                  setCurrentImageIndex(
+                    currentImageIndex > 0
+                      ? currentImageIndex - 1
+                      : mediaFileUrls.length - 1
+                  )
+                }
+              >
+                <FontAwesomeIcon icon={faArrowLeft} size="lg" />
+              </button>
+              <button
+                className="absolute inset-y-0 right-0 z-10 flex items-center justify-center p-2 text-cyan-800 transition-colors duration-200 hover:bg-cyan-100 hover:bg-opacity-50"
+                onClick={() =>
+                  setCurrentImageIndex(
+                    currentImageIndex < mediaFileUrls.length - 1
+                      ? currentImageIndex + 1
+                      : 0
+                  )
+                }
+              >
+                <FontAwesomeIcon icon={faArrowRight} size="lg" />
+              </button>
+            </>
+          ) : (
+            <img
+              alt="Media Thumbnail"
+              className="h-full w-full rounded-lg object-cover transition-opacity duration-500 ease-in-out"
+              src={displayUrl}
+            />
+          )}
         </div>
-        <div className="flex w-full justify-center">
-          <button
-            className="mt-4 inline-block rounded-lg border-2 border-cyan-400 bg-cyan-200 px-4 py-2 text-cyan-700 transition-all hover:bg-cyan-300 hover:text-cyan-800 dark:border-gray-700 dark:bg-cyan-400 dark:text-white"
-            onClick={() => setIsModalOpen(true)}
-          >
-            View Details
-          </button>
+        <hr className="border-t border-gray-200" />
+        <div className="my-4 text-center">
+          <p className="text-lg font-medium text-gray-900">Descripción</p>
+          <p className="text-sm text-gray-700">{description}</p>
         </div>
-      </CardContent>
-      <InfoCardDetailModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={title}
-        description={description}
-        mediaFileUrl={displayUrl} // Use displayUrl here
-      />
-    </Card>
+      </div>
+      <div className="flex justify-center p-4">
+        <button
+          className="rounded-lg bg-cyan-800 px-5 py-2 text-lg text-white transition-colors duration-150 ease-in-out hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-800 focus:ring-offset-2"
+          onClick={() => {
+            setModalOpen(true)
+            setSelectedMediaItem({
+              name: title,
+              description,
+              mediaFileUrls,
+              category
+            })
+          }}
+        >
+          {infoCard.buttonText || 'Ver Más'}
+        </button>
+      </div>
+    </div>
   )
 }
 

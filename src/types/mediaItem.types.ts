@@ -8,4 +8,6 @@ export interface MediaItem {
   updated_at: Date
   mediaFile?: MediaFile // This remains for the fetched media file object
   category: string // Add this line
+  mediaFileUrls?: string[] // Added to resolve the error
+  thumbnailUrl?: string // Added to resolve the error
 }

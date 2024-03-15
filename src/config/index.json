@@ -5,5 +5,8 @@
     "title": "Wilson Ferreira Aldunate",
     "description": "Archivo historico de Wilson Ferreira Aldunate",
     "mainHeroImage": "../public/images/mainImg.png"
+  },
+  "infoCard": {
+    "buttonText": "Ver"
   }
 }
