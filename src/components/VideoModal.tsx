@@ -2,26 +2,21 @@ import { Dialog, Transition } from '@headlessui/react'
 import { ArrowDownIcon, XMarkIcon } from '@heroicons/react/24/solid'
 import React from 'react'
 
+import { MediaItem } from '@/types/mediaItem.types'
+
 interface VideoModalProps {
   isOpen: boolean
   setIsOpen: (isOpen: boolean) => void
-  video: {
-    name?: string
-    description?: string
-    category?: string
-    uploadDate?: string
-    creator?: string
-    mediaFileUrls: string[]
-  }
+  mediaItem: MediaItem
 }
 
-function VideoModal({ isOpen, setIsOpen, video }: VideoModalProps) {
-  if (!video) return null
+function VideoModal({ isOpen, setIsOpen, mediaItem }: VideoModalProps) {
+  if (!mediaItem) return null
 
   const downloadVideo = () => {
     const link = document.createElement('a')
-    link.href = video.mediaFileUrls[0]
-    link.setAttribute('download', video.name || 'download') // Provide a default name if video.name is undefined
+    link.href = mediaItem.mediaFiles[0].file
+    link.setAttribute('download', mediaItem.name || 'download') // Provide a default name if video.name is undefined
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -62,7 +57,7 @@ function VideoModal({ isOpen, setIsOpen, video }: VideoModalProps) {
                   as="h3"
                   className="flex items-center justify-between text-xl font-semibold leading-6 text-gray-900"
                 >
-                  {video.name}
+                  {mediaItem.name}
                   <button
                     onClick={() => setIsOpen(false)}
                     className="rounded-md text-cyan-800 hover:text-cyan-600"
@@ -73,22 +68,25 @@ function VideoModal({ isOpen, setIsOpen, video }: VideoModalProps) {
                 <div className="my-4 border-t border-gray-200" />
                 <div className="mt-2">
                   <p className="mb-2 text-sm text-gray-500">
-                    {video.description}
+                    {mediaItem.description}
                   </p>
                   <p className="mb-1 text-sm text-cyan-800">
-                    Category: {video.category}
+                    Category: {mediaItem.category}
                   </p>
                   <p className="mb-1 text-sm text-gray-500">
-                    Uploaded on: {video.uploadDate || 'Date not available'}
+                    Uploaded on: {mediaItem.created_at || 'Date not available'}
                   </p>
                   <p className="mb-4 text-sm text-gray-500">
-                    Creator: {video.creator || 'Unknown'}
+                    Creator: {mediaItem.creator || 'Unknown'}
                   </p>
                 </div>
                 <div className="my-4 border-t border-gray-200" />
                 <div className="mb-4 aspect-video w-full overflow-hidden rounded-md bg-black">
                   <video controls className="h-full w-full">
-                    <source src={video.mediaFileUrls[0]} type="video/mp4" />
+                    <source
+                      src={mediaItem.mediaFiles[0].file}
+                      type="video/mp4"
+                    />
                     Your browser does not support the video tag.
                   </video>
                 </div>

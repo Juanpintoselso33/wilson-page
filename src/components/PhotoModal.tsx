@@ -3,21 +3,17 @@ import React, { useState } from 'react'
 interface PhotoModalProps {
   isOpen: boolean
   onClose: () => void
-  photoUrls?: string[]
-  title?: string // Título de la galería de fotos
-  description?: string // Descripción de la galería de fotos
+  mediaItem: MediaItem
 }
 
 const PhotoModal: React.FC<PhotoModalProps> = ({
   isOpen,
   onClose,
-  photoUrls,
-  title,
-  description
+  mediaItem
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
-  if (!isOpen || !photoUrls || photoUrls.length === 0) return null
+  if (!isOpen || !mediaItem) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
@@ -29,25 +25,25 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
           &times;
         </button>
         <div className="text-center">
-          {title && (
+          {mediaItem.name && (
             <h2 className="mb-3 text-3xl font-semibold text-gray-900">
-              {title}
+              {mediaItem.name}
             </h2>
           )}
-          {description && (
-            <p className="text-md mb-5 text-gray-700">{description}</p>
+          {mediaItem.description && (
+            <p className="mb-5 text-gray-700">{mediaItem.description}</p>
           )}
         </div>
         <div className="mb-6 flex justify-center">
           <img
             alt={`Preview ${currentImageIndex}`}
             className="rounded-lg object-contain shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl"
-            src={photoUrls[currentImageIndex]}
+            src={mediaItem.mediaFiles[currentImageIndex].file}
             style={{ maxHeight: '65vh' }}
           />
         </div>
         <div className="flex overflow-x-auto pb-4">
-          {photoUrls.map((url, index) => (
+          {mediaItem.mediaFiles.map((mediaFile, index) => (
             <img
               key={index}
               alt={`Thumbnail ${index}`}
@@ -56,7 +52,7 @@ const PhotoModal: React.FC<PhotoModalProps> = ({
                   ? 'ring-4 ring-cyan-800'
                   : 'ring-2 ring-gray-300'
               }`}
-              src={url}
+              src={mediaFile.file}
               onClick={() => setCurrentImageIndex(index)}
               style={{ width: '120px', height: '120px' }}
             />

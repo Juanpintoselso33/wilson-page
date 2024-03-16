@@ -1,3 +1,4 @@
+// src/contexts/MediaContext.tsx
 import React, {
   createContext,
   ReactNode,
@@ -6,42 +7,31 @@ import React, {
   useState
 } from 'react'
 
-interface MediaItem {
-  name?: string
-  description?: string
-  media_files?: Array<{
-    id: number
-    filename: string
-  }>
-  category?: string
-  creator?: string
-  status?: string
-  publish_date?: string
-  mediaFileUrls?: string[]
-}
+import { fetchMediaItems } from '../api/mediaService'
+import { MediaItem } from '../types/mediaItem.types' // Asegúrate de ajustar esta ruta de importación.
 
 interface MediaContextType {
-  mediaItems: MediaItem[] // Use MediaItem[] instead of any[]
+  mediaItems: MediaItem[]
   setMediaItems: React.Dispatch<React.SetStateAction<MediaItem[]>>
-  isModalOpen: boolean // Add this line
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>> // And this line
-  selectedMediaItem?: MediaItem // Add this line, adjust the type as needed
+  isModalOpen: boolean
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+  selectedMediaItem?: MediaItem
   setSelectedMediaItem: React.Dispatch<
     React.SetStateAction<MediaItem | undefined>
-  > // Add this line
-  currentFilter: string // Added line for filtering
-  setCurrentFilter: React.Dispatch<React.SetStateAction<string>> // Added line for filtering
+  >
+  currentFilter: string
+  setCurrentFilter: React.Dispatch<React.SetStateAction<string>>
 }
 
 const defaultContextValue: MediaContextType = {
   mediaItems: [],
   setMediaItems: () => {},
   isModalOpen: false,
-  setIsModalOpen: (value: boolean | ((val: boolean) => boolean)) => {}, // Modified for debugging
-  selectedMediaItem: undefined, // Initialize selectedMediaItem
-  setSelectedMediaItem: () => {}, // Add this line
-  currentFilter: 'all', // Default to showing all items
-  setCurrentFilter: () => {} // Added line for filtering
+  setIsModalOpen: () => {},
+  selectedMediaItem: undefined,
+  setSelectedMediaItem: () => {},
+  currentFilter: 'all',
+  setCurrentFilter: () => {}
 }
 
 export const MediaContext = createContext<MediaContextType>(defaultContextValue)
@@ -55,20 +45,27 @@ export const useMedia = () => {
 }
 
 export const MediaProvider = ({ children }: { children: ReactNode }) => {
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]) // Consider specifying a more specific type instead of any
-  const [isModalOpen, setIsModalOpen] = useState(false) // Add this line
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedMediaItem, setSelectedMediaItem] = useState<
     MediaItem | undefined
-  >(undefined) // Initialize selectedMediaItem
-  const [currentFilter, setCurrentFilter] = useState('all') // Added line for filtering
+  >()
+  const [currentFilter, setCurrentFilter] = useState('all')
 
-  // Modification for debugging: wrap setIsModalOpen to add console.log
-  const setIsModalOpenDebug = (
-    value: boolean | ((val: boolean) => boolean)
-  ) => {
-    console.log('Modal Open State Changing To:', value)
-    setIsModalOpen(value)
-  }
+  // Imagina que aquí tienes una función para cargar los mediaItems desde tu backend.
+  useEffect(() => {
+    const loadItems = async () => {
+      try {
+        const items = await fetchMediaItems()
+        setMediaItems(items)
+        console.log('Media items loaded:', items)
+      } catch (error) {
+        console.error('Failed to load media items:', error)
+      }
+    }
+
+    loadItems()
+  }, [])
 
   return (
     <MediaContext.Provider
@@ -76,11 +73,11 @@ export const MediaProvider = ({ children }: { children: ReactNode }) => {
         mediaItems,
         setMediaItems,
         isModalOpen,
-        setIsModalOpen: setIsModalOpenDebug, // Use the modified version for debugging
+        setIsModalOpen,
         selectedMediaItem,
-        setSelectedMediaItem, // Expose setSelectedMediaItem through the context
-        currentFilter, // Added line for filtering
-        setCurrentFilter // Added line for filtering
+        setSelectedMediaItem,
+        currentFilter,
+        setCurrentFilter
       }}
     >
       {children}

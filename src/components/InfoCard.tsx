@@ -4,30 +4,45 @@ import React, { useContext, useState } from 'react'
 
 import { infoCard } from '../config/index.json'
 import { MediaContext } from '../contexts/MediaContext'
+import { MediaFile } from '../types'
 
 interface InfoCardProps {
-  title: string
+  id: number
+  name: string
   description: string
-  mediaFileUrls: string[]
-  thumbnailUrl?: string
   category: string
-  mediaFiles: any[]
+  creator: string
+  previewUrl?: string
+  status: string
+  publishDate?: string
+  mediaFiles: MediaFile[]
+  created_at: string
+  updated_at: string
+  tags: string[]
+  // Añade aquí cualquier otra propiedad relevante que necesites
 }
-
 const InfoCard: React.FC<InfoCardProps> = ({
-  title,
+  id,
+  name,
   description,
-  mediaFileUrls,
-  thumbnailUrl,
-  category
+  category,
+  creator,
+  previewUrl,
+  status,
+  publishDate,
+  mediaFiles,
+  created_at,
+  updated_at,
+  tags
+  // Desestructura aquí cualquier otra propiedad relevante
 }) => {
-  let displayUrl = mediaFileUrls[0]
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const { setSelectedMediaItem, setIsModalOpen: setModalOpen } =
     useContext(MediaContext)
 
-  if (category === 'video' && thumbnailUrl) {
-    displayUrl = thumbnailUrl
+  let displayUrl = mediaFiles[0].file
+  if (category === 'video') {
+    displayUrl = mediaFiles[0].thumbnail
   }
 
   return (
@@ -38,16 +53,16 @@ const InfoCard: React.FC<InfoCardProps> = ({
         </div>
         <hr className="border-t border-gray-200" />
         <h2 className="my-4 text-center text-2xl font-bold text-cyan-800">
-          {title}
+          {name}
         </h2>
         <div className="relative mx-auto mb-4 h-64 w-full">
           {/* Image and navigation buttons */}
-          {mediaFileUrls.length > 1 && category === 'fotos' ? (
+          {mediaFiles.length > 1 && category === 'fotos' ? (
             <>
               <img
                 alt="Media Thumbnail"
                 className="h-full w-full rounded-lg object-cover transition-opacity duration-500 ease-in-out"
-                src={mediaFileUrls[currentImageIndex]}
+                src={mediaFiles[currentImageIndex].file}
               />
               <button
                 className="absolute inset-y-0 left-0 z-10 flex items-center justify-center p-2 text-cyan-800 transition-colors duration-200 hover:bg-cyan-100/50"
@@ -55,7 +70,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
                   setCurrentImageIndex(
                     currentImageIndex > 0
                       ? currentImageIndex - 1
-                      : mediaFileUrls.length - 1
+                      : mediaFiles.length - 1
                   )
                 }
               >
@@ -65,7 +80,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
                 className="absolute inset-y-0 right-0 z-10 flex items-center justify-center p-2 text-cyan-800 transition-colors duration-200 hover:bg-cyan-100/50"
                 onClick={() =>
                   setCurrentImageIndex(
-                    currentImageIndex < mediaFileUrls.length - 1
+                    currentImageIndex < mediaFiles.length - 1
                       ? currentImageIndex + 1
                       : 0
                   )
@@ -94,10 +109,18 @@ const InfoCard: React.FC<InfoCardProps> = ({
           onClick={() => {
             setModalOpen(true)
             setSelectedMediaItem({
-              name: title,
+              id,
+              name,
               description,
-              mediaFileUrls,
-              category
+              category,
+              creator,
+              previewUrl,
+              status,
+              publishDate,
+              mediaFiles,
+              created_at,
+              updated_at,
+              tags
             })
           }}
         >

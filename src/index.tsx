@@ -1,21 +1,19 @@
-import 'styles/index.css'
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter as Router } from 'react-router-dom'; // Importa BrowserRouter
+import App from './components/App'; // Asegúrate de que la ruta de importación sea correcta
+import { MediaProvider } from './contexts/MediaContext';
+import 'styles/index.css';
 
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-
-import App from '@/components/App'
-
-import { MediaProvider } from './contexts/MediaContext' // Importa MediaProvider
-
-const container = document.getElementById('root') as HTMLDivElement
-const root = createRoot(container)
+const container = document.getElementById('root');
+const root = createRoot(container!); // Asegúrate de que container no sea null
 
 root.render(
   <React.StrictMode>
-    <MediaProvider>
-      {' '}
-      {/* Envuelve App con MediaProvider */}
-      <App />
-    </MediaProvider>
+    <Router> {/* Envuelve todo en Router */}
+      <MediaProvider>
+        <App />
+      </MediaProvider>
+    </Router>
   </React.StrictMode>
-)
+);

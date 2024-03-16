@@ -1,13 +1,17 @@
-import { MediaFile } from './mediaFile.types' // Asegúrate de ajustar la ruta de importación
+// src/types/mediaItem.types.ts
+import { MediaFile } from './mediaFile.types'
+
 export interface MediaItem {
   id: number
   name: string
   description: string
-  media_file: number // Adjusted from mediaFileId to match the backend response
-  created_at: Date
-  updated_at: Date
-  mediaFile?: MediaFile // This remains for the fetched media file object
-  category: string // Add this line
-  mediaFileUrls?: string[] // Added to resolve the error
-  thumbnailUrl?: string // Added to resolve the error
+  category: string // Nuevo campo
+  creator: string // Nuevo campo
+  previewUrl?: string // Nuevo campo, opcional
+  status: string // Nuevo campo
+  publishDate?: string // Nuevo campo, opcional
+  mediaFiles: MediaFile[] // Relación ManyToMany con MediaFile
+  created_at: string
+  updated_at: string
+  tags: string[] // Representación simplificada de TaggableManager, ajusta según necesidades
 }

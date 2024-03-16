@@ -19,7 +19,7 @@ const ModalFactory: React.FC<ModalFactoryProps> = ({
 }) => {
   if (!selectedMediaItem) return null
 
-  const { category, name, description, mediaFileUrls } = selectedMediaItem
+  const { category } = selectedMediaItem
 
   switch (category) {
     case 'video':
@@ -27,7 +27,7 @@ const ModalFactory: React.FC<ModalFactoryProps> = ({
         <VideoModal
           isOpen={isOpen}
           setIsOpen={onClose} // Cambio aquí: onClose por setIsOpen
-          video={selectedMediaItem} // Asegúrate de que selectedMediaItem tenga la estructura correcta
+          mediaItem={selectedMediaItem} // Asegúrate de que selectedMediaItem tenga la estructura correcta
         />
       )
     case 'fotos':
@@ -35,9 +35,7 @@ const ModalFactory: React.FC<ModalFactoryProps> = ({
         <PhotoModal
           isOpen={isOpen}
           onClose={onClose}
-          photoUrls={mediaFileUrls}
-          title={name}
-          description={description}
+          mediaItem={selectedMediaItem} // Adjust PhotoModal to accept a MediaItem
         />
       )
     case 'audio':
@@ -45,7 +43,7 @@ const ModalFactory: React.FC<ModalFactoryProps> = ({
         <AudioModal
           isOpen={isOpen}
           onClose={onClose}
-          audioUrl={mediaFileUrls?.[0]}
+          mediaItem={selectedMediaItem} // Adjust AudioModal to accept a MediaItem
         />
       )
     default:

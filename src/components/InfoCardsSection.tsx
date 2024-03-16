@@ -1,57 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 
-import { fetchMediaFileById } from '../api/mediaFile'
-import { fetchMediaItems } from '../api/mediaService'
 import { MediaContext } from '../contexts/MediaContext'
-import { MediaItem } from '../types/mediaItem.types'
 import InfoCard from './InfoCard'
 
 const InfoCardsSection = () => {
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
-  console.log('Media Items:', mediaItems)
-  console.log(
-    'Media Items Categories:',
-    mediaItems.map((item) => item.category)
-  )
-  const { currentFilter } = useContext(MediaContext)
+  const { mediaItems, currentFilter } = useContext(MediaContext)
 
   const filteredMediaItems = mediaItems.filter((item) => {
-    console.log('Filtro:', currentFilter)
     return currentFilter === 'all' || item.category === currentFilter
   })
-
-  console.log('Filtered items:', filteredMediaItems)
-
-  useEffect(() => {
-    const loadMediaItems = async () => {
-      try {
-        const mediaItemsData = await fetchMediaItems()
-        console.log('Media Items:', mediaItemsData) // Added console.log to log media items from the backend
-        const mediaItemsWithFiles = await Promise.all(
-          mediaItemsData.map(async (item) => {
-            if (item.media_files.length > 0) {
-              const mediaFiles = await Promise.all(
-                item.media_files.map((file) => fetchMediaFileById(file.id))
-              )
-              const mediaFileUrls = mediaFiles.map((mediaFile) => {
-                return decodeURIComponent(mediaFile.file).replace(/^\//, '')
-              })
-              // Directly use mediaFile.file without decoding or URL manipulation
-              return {
-                ...item,
-                mediaFileUrls: mediaFileUrls,
-                thumbnailUrl: mediaFiles[0]?.thumbnail || 'defaultThumbnailUrl'
-              }
-            }
-            return item // Return item as is if no media files are associated
-          })
-        )
-        setMediaItems(mediaItemsWithFiles)
-      } catch (error) {}
-    }
-
-    loadMediaItems()
-  }, [])
 
   return (
     <section className="p-4">
@@ -59,12 +16,18 @@ const InfoCardsSection = () => {
         {filteredMediaItems.map((item) => (
           <InfoCard
             key={item.id}
-            title={item.name}
+            name={item.name}
             description={item.description}
-            mediaFileUrls={item.mediaFileUrls || ['defaultFileUrl']}
-            thumbnailUrl={item.thumbnailUrl || 'defaultThumbnailUrl'}
             category={item.category}
-            mediaFiles={item.mediaFileUrls || ['defaultFileUrl']} // Add this line if mediaFiles is the same as mediaFileUrls
+            creator={item.creator}
+            previewUrl={item.previewUrl}
+            status={item.status}
+            publishDate={item.publishDate}
+            mediaFiles={item.mediaFiles}
+            created_at={item.created_at}
+            updated_at={item.updated_at}
+            tags={item.tags}
+            // Pasa aquí cualquier otra propiedad relevante
           />
         ))}
       </div>

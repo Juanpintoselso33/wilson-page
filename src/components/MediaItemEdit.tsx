@@ -1,14 +1,25 @@
-import { Edit, SimpleForm, TextInput } from 'react-admin'
+import React from 'react';
 
-const MediaItemEdit = () => (
-  <Edit>
-    <SimpleForm>
-      <TextInput source="name" />
-      <TextInput source="description" />
-      <TextInput source="category" />
+const MediaItemCreate = () => (
+  <div>
+    <h2>Create Media Item</h2>
+    <form>
+      <label>
+        Name:
+        <input type="text" name="name" />
+      </label>
+      <label>
+        Description:
+        <input type="text" name="description" />
+      </label>
+      <label>
+        Category:
+        <input type="text" name="category" />
+      </label>
       {/* Añade más campos según sea necesario */}
-    </SimpleForm>
-  </Edit>
-)
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+);
 
-export default MediaItemEdit
+export default MediaItemCreate;
