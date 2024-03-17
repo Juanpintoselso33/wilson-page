@@ -1,25 +1,40 @@
-import React from 'react'
-import { Admin, Resource } from 'react-admin'
+import React from 'react';
+import { Admin, Resource } from 'react-admin';
+import MyMediaItemList from './AdminComponents/MediaItemList';
+import MyMediaItemCreate from './MediaItemCreateForm';
+import MyMediaItemEdit from './MediaItemForm';
+import Dashboard from './AdminComponents/Dashboard'; // Import your Dashboard component
+import { createTheme } from '@mui/material/styles';
+import { Layout, defaultTheme, defaultDarkTheme } from 'react-admin';
+import MyAppBar from './AdminComponents/AppBar'; // Custom AppBar component
+import MySidebar from './AdminComponents/SideBar'; // Custom Sidebar component
+// Custom Menu component
+import dataProvider from '../dataProvider';
 
-import useMediaDataProvider from '../dataProvider'
-import MyMediaItemCreate from './MediaItemCreate'
-import MyMediaItemEdit from './MediaItemEdit'
-import MyMediaItemList from './MediaItemList'
+// Define your custom theme
+
+const MyLayout = (props) => <Layout {...props} appBar={MyAppBar} sidebar={MySidebar}  />;
 
 const AdminPage: React.FC = () => {
-  const dataProvider = useMediaDataProvider()
-
   return (
-    <Admin dataProvider={dataProvider}>
+    <Admin
+      layout={MyLayout}
+      theme={defaultTheme}
+      darkTheme={defaultDarkTheme}
+      defaultTheme="light"
+      dashboard={Dashboard}
+      dataProvider={dataProvider}
+    >
       <Resource
         name="mediaitems"
         list={MyMediaItemList}
         create={MyMediaItemCreate}
         edit={MyMediaItemEdit}
+        // Add icons if needed
       />
-      {/* Configura más recursos según sea necesario */}
+      {/* Add more resources as needed */}
     </Admin>
-  )
-}
+  );
+};
 
-export default AdminPage
+export default AdminPage;

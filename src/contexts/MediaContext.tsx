@@ -4,23 +4,24 @@ import React, {
   ReactNode,
   useContext,
   useEffect,
-  useState
-} from 'react'
-
-import { fetchMediaItems } from '../api/mediaService'
-import { MediaItem } from '../types/mediaItem.types' // Asegúrate de ajustar esta ruta de importación.
+  useState,
+} from 'react';
+import { fetchMediaItems, createMediaItem, updateMediaItem, deleteMediaItem } from '../api/mediaService'; // Asegúrate de tener estas funciones implementadas en tu servicio de API.
+import { MediaItem } from '../types/mediaItem.types';
 
 interface MediaContextType {
-  mediaItems: MediaItem[]
-  setMediaItems: React.Dispatch<React.SetStateAction<MediaItem[]>>
-  isModalOpen: boolean
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-  selectedMediaItem?: MediaItem
-  setSelectedMediaItem: React.Dispatch<
-    React.SetStateAction<MediaItem | undefined>
-  >
-  currentFilter: string
-  setCurrentFilter: React.Dispatch<React.SetStateAction<string>>
+  mediaItems: MediaItem[];
+  setMediaItems: React.Dispatch<React.SetStateAction<MediaItem[]>>;
+  isModalOpen: boolean;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedMediaItem?: MediaItem;
+  setSelectedMediaItem: React.Dispatch<React.SetStateAction<MediaItem | undefined>>;
+  currentFilter: string;
+  setCurrentFilter: React.Dispatch<React.SetStateAction<string>>;
+  refreshMediaItems: () => Promise<void>;
+  createNewItem: (item: Omit<MediaItem, 'id'>) => Promise<void>;
+  updateItem: (item: MediaItem) => Promise<void>;
+  deleteItem: (itemId: number) => Promise<void>;
 }
 
 const defaultContextValue: MediaContextType = {
@@ -31,41 +32,68 @@ const defaultContextValue: MediaContextType = {
   selectedMediaItem: undefined,
   setSelectedMediaItem: () => {},
   currentFilter: 'all',
-  setCurrentFilter: () => {}
-}
+  setCurrentFilter: () => {},
+  refreshMediaItems: async () => {},
+  createNewItem: async () => {},
+  updateItem: async () => {},
+  deleteItem: async () => {},
+};
 
-export const MediaContext = createContext<MediaContextType>(defaultContextValue)
+export const MediaContext = createContext<MediaContextType>(defaultContextValue);
 
 export const useMedia = () => {
-  const context = useContext(MediaContext)
+  const context = useContext(MediaContext);
   if (context === undefined) {
-    throw new Error('useMedia must be used within a MediaProvider')
+    throw new Error('useMedia must be used within a MediaProvider');
   }
-  return context
-}
+  return context;
+};
 
 export const MediaProvider = ({ children }: { children: ReactNode }) => {
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedMediaItem, setSelectedMediaItem] = useState<
-    MediaItem | undefined
-  >()
-  const [currentFilter, setCurrentFilter] = useState('all')
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMediaItem, setSelectedMediaItem] = useState<MediaItem | undefined>();
+  const [currentFilter, setCurrentFilter] = useState('all');
 
-  // Imagina que aquí tienes una función para cargar los mediaItems desde tu backend.
-  useEffect(() => {
-    const loadItems = async () => {
-      try {
-        const items = await fetchMediaItems()
-        setMediaItems(items)
-        console.log('Media items loaded:', items)
-      } catch (error) {
-        console.error('Failed to load media items:', error)
-      }
+  const refreshMediaItems = async () => {
+    try {
+      const items = await fetchMediaItems();
+      setMediaItems(items);
+    } catch (error) {
+      console.error('Failed to load media items:', error);
     }
+  };
 
-    loadItems()
-  }, [])
+  const createNewItem = async (item: Omit<MediaItem, 'id'>) => {
+    try {
+      await createMediaItem(item);
+      await refreshMediaItems();
+    } catch (error) {
+      console.error('Failed to create new item:', error);
+    }
+  };
+
+  const updateItem = async (item: MediaItem) => {
+    try {
+      await updateMediaItem(item);
+      await refreshMediaItems();
+    } catch (error) {
+      console.error('Failed to update item:', error);
+    }
+  };
+
+  const deleteItem = async (itemId: number) => {
+    try {
+      await deleteMediaItem(itemId);
+      await refreshMediaItems();
+    } catch (error) {
+      console.error('Failed to delete item:', error);
+    }
+  };
+
+  useEffect(() => {
+    refreshMediaItems();
+  }, []);
 
   return (
     <MediaContext.Provider
@@ -77,10 +105,15 @@ export const MediaProvider = ({ children }: { children: ReactNode }) => {
         selectedMediaItem,
         setSelectedMediaItem,
         currentFilter,
-        setCurrentFilter
+        setCurrentFilter,
+        refreshMediaItems,
+        createNewItem,
+        updateItem,
+        deleteItem,
       }}
     >
       {children}
     </MediaContext.Provider>
-  )
-}
+  );
+};
+

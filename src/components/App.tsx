@@ -10,9 +10,9 @@ import MainHero from './MainHero'
 import ModalFactory from './ModalFactory'
 import NavBar from './NavBar'
 import SectionBar from './SectionBar'
-import MediaItemList from './MediaItemList' // Import corrected based on file_context_3
-import MediaItemCreate from './MediaItemCreate' // Assuming a similar structure for MediaItemCreate
-import MediaItemEdit from './MediaItemEdit' // Assuming a similar structure for MediaItemEdit
+import MediaItemList from './AdminComponents/MediaItemList' // Import corrected based on file_context_3
+import MediaItemCreate from './MediaItemCreateForm' // Assuming a similar structure for MediaItemCreate
+import MediaItemEdit from './MediaItemForm' // Assuming a similar structure for MediaItemEdit
 
 const App = () => {
   const { isModalOpen, setIsModalOpen, selectedMediaItem } =
@@ -32,7 +32,7 @@ const App = () => {
               </div>
             </>
           } />
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin" element={<AdminPage/>} />
           {/* Define más rutas según sea necesario */}
         </Routes>
         <ModalFactory
